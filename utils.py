@@ -5,6 +5,9 @@ import gym
 import os
 from collections import deque
 import random
+from gym import ObservationWrapper
+from gym.spaces import Box
+from skimage import color
 
 
 class eval_mode(object):
@@ -168,3 +171,29 @@ class FrameStack(gym.Wrapper):
     def _get_obs(self):
         assert len(self._frames) == self._k
         return np.concatenate(list(self._frames), axis=0)
+
+
+class GrayScaleObservation(ObservationWrapper):
+    r"""Convert the image observation from RGB to gray scale."""
+
+    def __init__(self, env):
+        super().__init__(env)
+
+        if hasattr(env, "_max_episode_steps"):
+            self._max_episode_steps = env._max_episode_steps
+
+        assert (
+            len(env.observation_space.shape) == 3
+            and env.observation_space.shape[0] == 3
+        )
+
+        self.observation_space = Box(
+            low=0, high=255, shape=(1, *env.observation_space.shape[1:]), dtype=np.uint8)
+
+    def observation(self, observation):
+        # observation = color.rgb2gray(observation)
+        observation = 0.299*observation[0, :] + 0.587*observation[1, :] + 0.114*observation[2, :]
+        observation = np.expand_dims(observation, 0)
+        observation = observation.astype(np.uint8)
+
+        return observation
