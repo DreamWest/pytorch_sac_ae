@@ -17,6 +17,13 @@ FORMAT_CONFIG = {
             ('critic_loss', 'CLOSS', 'float'), ('ae_loss', 'RLOSS', 'float')
         ],
         'eval': [('step', 'S', 'int'), ('episode_reward', 'ER', 'float')]
+    },
+    'bcq': {
+        'train': [
+            ('actor_loss', 'ALOSS', 'float'), ('critic_loss', 'CLOSS', 'float'), ('obs_ae_loss', 'RLOSS', 'float'),
+            ('vae_loss', 'VAELOSS', 'float')
+        ],
+        'eval': [('episode_reward', 'ER', 'float')]
     }
 }
 
